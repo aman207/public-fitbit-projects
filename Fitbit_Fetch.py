@@ -2,8 +2,8 @@
 import base64, requests, schedule, time, json, pytz, logging
 from requests.exceptions import ConnectionError
 from datetime import datetime, timedelta
-from influxdb import InfluxDBClient
-from influxdb.exceptions import InfluxDBClientError
+from influxdb_client import InfluxDBClient
+from influxdb_client.client.exceptions import InfluxDBError
 
 # %% [markdown]
 # ## Variables
@@ -14,10 +14,9 @@ TOKEN_FILE_PATH = "your/expected/token/file/location/path"
 OVERWRITE_LOG_FILE = True
 FITBIT_LANGUAGE = 'en_US'
 INFLUXDB_HOST = 'localhost'
-INFLUXDB_PORT = 8086
-INFLUXDB_USERNAME = 'your_influxdb_username'
-INFLUXDB_PASSWORD = 'your_influxdb_password'
-INFLUXDB_DATABASE = 'your_influxdb_database_name'
+INFLUXDB_TOKEN = 'your_influxV2_token'
+INFLUXDB_ORGANIZATION = 'your_influx_org'
+INFLUXDB_BUCKET = 'your_influx_bucket'
 # MAKE SURE you set the application type to PERSONAL. Otherwise, you won't have access to intraday data series, resulting in 40X errors.
 client_id = "your_application_client_ID" # Change this to your client ID
 client_secret = "your_application_client_secret" # Change this to your client Secret
@@ -153,17 +152,17 @@ ACCESS_TOKEN = Get_New_Access_Token(client_id, client_secret)
 
 # %%
 try:
-    influxdbclient = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT, username=INFLUXDB_USERNAME, password=INFLUXDB_PASSWORD)
-    influxdbclient.switch_database(INFLUXDB_DATABASE)
-except InfluxDBClientError as err:
-    logging.error("Unable to connect with influxdb database! Aborted")
-    raise InfluxDBClientError("InfluxDB connection failed:" + str(err))
+    influxdbclient = InfluxDBClient(url=INFLUXDB_HOST, token=INFLUXDB_TOKEN, org=INFLUXDB_ORGANIZATION)
+    influxdb_write = influxdbclient.write_api()
+except InfluxDBError as err:
+    logging.error("Unable to login to InfluxDB")
+    raise InfluxDBError("InfluxDB connection failed:" + str(err))
 
 def write_points_to_influxdb(points):
     try:
-        influxdbclient.write_points(points)
+        influxdb_write.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORGANIZATION, record=points)
         logging.info("Successfully updated influxdb database with new points")
-    except InfluxDBClientError as err:
+    except InfluxDBError as err:
         logging.error("Unable to connect with influxdb database! " + str(err))
         print("Influxdb connection failed! ", str(err))
 
