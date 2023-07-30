@@ -2,4 +2,3 @@ influxdb-client
 pytz
 Requests
 schedule
-python-dotenv
