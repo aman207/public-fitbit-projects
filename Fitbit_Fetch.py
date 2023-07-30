@@ -2,6 +2,7 @@
 import base64, requests, schedule, time, json, pytz, logging, os
 from requests.exceptions import ConnectionError
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient
 from influxdb_client.client.exceptions import InfluxDBError
 
@@ -9,26 +10,29 @@ from influxdb_client.client.exceptions import InfluxDBError
 # ## Variables
 
 # %%
-FITBIT_LOG_FILE_PATH = os.environ.get("FITBIT_LOG_FILE_PATH") or "your/expected/log/file/location/path"
-TOKEN_FILE_PATH = os.environ.get("TOKEN_FILE_PATH") or "your/expected/token/file/location/path"
-OVERWRITE_LOG_FILE = True
-FITBIT_LANGUAGE = 'en_US'
-INFLUXDB_HOST = os.environ.get("INFLUXDB_HOST") or 'http://localhost:8086'
-INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN") or 'your_influxV2_token'
-INFLUXDB_ORGANIZATION = os.environ.get("INFLUXDB_ORGANIZATION") or 'your_influx_org'
-INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET") or 'your_influx_bucket'
+load_dotenv()
+
+FITBIT_LOG_FILE_PATH = os.environ.get("FITBIT_LOG_FILE_PATH", "fitbit.log")
+TOKEN_FILE_PATH = os.environ.get("TOKEN_FILE_PATH", "token")
+OVERWRITE_LOG_FILE = os.environ.get("OVERWRITE_LOG_FILE", True)
+FITBIT_LANGUAGE = os.environ.get("FITBIT_LANGUAGE", "en_US")
+INFLUXDB_HOST = os.environ.get("INFLUXDB_HOST", "http://localhost:8086")
+INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN", "")
+INFLUXDB_ORGANIZATION = os.environ.get("INFLUXDB_ORGANIZATION", "")
+INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET", "")
 # MAKE SURE you set the application type to PERSONAL. Otherwise, you won't have access to intraday data series, resulting in 40X errors.
-client_id = os.environ.get("CLIENT_ID") or "your_application_client_ID" # Change this to your client ID
-client_secret = os.environ.get("CLIENT_SECRET") or "your_application_client_secret" # Change this to your client Secret
-DEVICENAME = os.environ.get("DEVICENAME") or "Your_Device_Name" # e.g. "Charge5"
-ACCESS_TOKEN = "" # Empty Global variable initialization, will be replaced with a functional access code later using the refresh code
-AUTO_DATE_RANGE = True # Automatically selects date range from todays date and update_date_range variable
-auto_update_date_range = 1 # Days to go back from today for AUTO_DATE_RANGE *** DO NOT go above 2 - otherwise may break rate limit ***
-LOCAL_TIMEZONE = "Automatic" # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
+CLIENT_ID = os.environ.get("CLIENT_ID", "") # Change this to your client ID
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET", "") # Change this to your client Secret
+DEVICENAME = os.environ.get("DEVICENAME", "") # e.g. "Charge5"
+AUTO_DATE_RANGE = os.environ.get("AUTO_DATE_RANGE", True) # Automatically selects date range from todays date and update_date_range variable
+AUTO_UPDATE_DATE_RANGE = int(os.environ.get("AUTO_UPDATE_DATE_RANGE", 1)) # Days to go back from today for AUTO_DATE_RANGE *** DO NOT go above 2 - otherwise may break rate limit ***
+LOCAL_TIMEZONE = os.environ.get("LOCAL_TIMEZONE") or 'Automatic' # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
+SERVER_ERROR_MAX_RETRY = int(os.environ.get("SERVER_ERROR_MAX_RETRY", 3))
+EXPIRED_TOKEN_MAX_RETRY = int(os.environ.get("EXPIRED_TOKEN_MAX_RETRY", 5))
+SKIP_REQUEST_ON_SERVER_ERROR = os.environ.get("SKIP_REQUEST_ON_SERVER_ERROR", True)
+
 SCHEDULE_AUTO_UPDATE = True if AUTO_DATE_RANGE else False # Scheduling updates of data when script runs
-SERVER_ERROR_MAX_RETRY = 3
-EXPIRED_TOKEN_MAX_RETRY = 5
-SKIP_REQUEST_ON_SERVER_ERROR = True
+ACCESS_TOKEN = "" # Empty Global variable initialization, will be replaced with a functional access code later using the refresh code
 
 # %% [markdown]
 # ## Logging setup
@@ -79,7 +83,7 @@ def request_data_from_fitbit(url, headers={}, params={}, data={}, request_type="
                 logging.info("Current Access Token : " + ACCESS_TOKEN)
                 logging.warning("Error code : " + str(response.status_code) + ", Details : " + response.text)
                 print("Error code : " + str(response.status_code) + ", Details : " + response.text)
-                ACCESS_TOKEN = Get_New_Access_Token(client_id, client_secret)
+                ACCESS_TOKEN = Get_New_Access_Token(CLIENT_ID, CLIENT_SECRET)
                 logging.info("New Access Token : " + ACCESS_TOKEN)
                 time.sleep(30)
                 if retry_attempts > EXPIRED_TOKEN_MAX_RETRY:
@@ -109,11 +113,11 @@ def request_data_from_fitbit(url, headers={}, params={}, data={}, request_type="
 # ## Token Refresh Management
 
 # %%
-def refresh_fitbit_tokens(client_id, client_secret, refresh_token):
+def refresh_fitbit_tokens(CLIENT_ID, CLIENT_SECRET, refresh_token):
     logging.info("Attempting to refresh tokens...")
     url = "https://api.fitbit.com/oauth2/token"
     headers = {
-        "Authorization": "Basic " + base64.b64encode((client_id + ":" + client_secret).encode()).decode(),
+        "Authorization": "Basic " + base64.b64encode((CLIENT_ID + ":" + CLIENT_SECRET).encode()).decode(),
         "Content-Type": "application/x-www-form-urlencoded"
     }
     data = {
@@ -137,15 +141,15 @@ def load_tokens_from_file():
         tokens = json.load(file)
         return tokens.get("access_token"), tokens.get("refresh_token")
 
-def Get_New_Access_Token(client_id, client_secret):
+def Get_New_Access_Token(CLIENT_ID, CLIENT_SECRET):
     try:
         access_token, refresh_token = load_tokens_from_file()
     except FileNotFoundError:
         refresh_token = input("No token file found. Please enter a valid refresh token : ")
-    access_token, refresh_token = refresh_fitbit_tokens(client_id, client_secret, refresh_token)
+    access_token, refresh_token = refresh_fitbit_tokens(CLIENT_ID, CLIENT_SECRET, refresh_token)
     return access_token
 
-ACCESS_TOKEN = Get_New_Access_Token(client_id, client_secret)
+ACCESS_TOKEN = Get_New_Access_Token(CLIENT_ID, CLIENT_SECRET)
 
 # %% [markdown]
 # ## Influxdb Database Initialization
@@ -172,7 +176,7 @@ def write_points_to_influxdb(points):
 # %%
 if AUTO_DATE_RANGE:
     end_date = datetime.now()
-    start_date = end_date - timedelta(days=auto_update_date_range)
+    start_date = end_date - timedelta(days=AUTO_UPDATE_DATE_RANGE)
     end_date_str = end_date.strftime("%Y-%m-%d")
     start_date_str = start_date.strftime("%Y-%m-%d")
 else:
@@ -190,7 +194,7 @@ collected_records = []
 def update_working_dates():
     global end_date, start_date, end_date_str, start_date_str
     end_date = datetime.now()
-    start_date = end_date - timedelta(days=auto_update_date_range)
+    start_date = end_date - timedelta(days=AUTO_UPDATE_DATE_RANGE)
     end_date_str = end_date.strftime("%Y-%m-%d")
     start_date_str = start_date.strftime("%Y-%m-%d")
 
@@ -536,7 +540,7 @@ else:
 if AUTO_DATE_RANGE:
     date_list = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d") for i in range((end_date - start_date).days + 1)]
     if len(date_list) > 3:
-        logging.warn("Auto schedule update is not meant for more than 3 days at a time, please consider lowering the auto_update_date_range variable to aviod rate limit hit!")
+        logging.warn("Auto schedule update is not meant for more than 3 days at a time, please consider lowering the AUTO_UPDATE_DATE_RANGE variable to aviod rate limit hit!")
     for date_str in date_list:
         get_intraday_data_limit_1d(date_str, [('heart','HeartRate_Intraday','1sec'),('steps','Steps_Intraday','1min')]) # 2 queries x number of dates ( default 2)
     get_daily_data_limit_30d(start_date_str, end_date_str) # 3 queries
@@ -550,7 +554,7 @@ if AUTO_DATE_RANGE:
 else:
     # Do Bulk update----------------------------------------------------------------------------------------------------------------------------
 
-    schedule.every(1).hours.do(lambda : Get_New_Access_Token(client_id,client_secret)) # Auto-refresh tokens every 1 hour
+    schedule.every(1).hours.do(lambda : Get_New_Access_Token(CLIENT_ID,CLIENT_SECRET)) # Auto-refresh tokens every 1 hour
     
     date_list = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d") for i in range((end_date - start_date).days + 1)]
 
@@ -594,7 +598,7 @@ else:
 # Ongoing continuous update of data
 if SCHEDULE_AUTO_UPDATE:
     
-    schedule.every(1).hours.do(lambda : Get_New_Access_Token(client_id,client_secret)) # Auto-refresh tokens every 1 hour
+    schedule.every(1).hours.do(lambda : Get_New_Access_Token(CLIENT_ID,CLIENT_SECRET)) # Auto-refresh tokens every 1 hour
     schedule.every(3).minutes.do( lambda : get_intraday_data_limit_1d(end_date_str, [('heart','HeartRate_Intraday','1sec'),('steps','Steps_Intraday','1min')] )) # Auto-refresh detailed HR and steps
     schedule.every(20).minutes.do(get_battery_level) # Auto-refresh battery level
     schedule.every(3).hours.do(lambda : get_daily_data_limit_30d(start_date_str, end_date_str))
