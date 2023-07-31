@@ -1,83 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_HEALTH_STATS",
-      "label": "Health Stats",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "barchart",
-      "name": "Bar chart",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "9.3.2"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "influxdb",
-      "name": "InfluxDB",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "marcusolsson-hourly-heatmap-panel",
-      "name": "Hourly heatmap",
-      "version": "2.0.1"
-    },
-    {
-      "type": "panel",
-      "id": "natel-discrete-panel",
-      "name": "Discrete",
-      "version": "0.1.1"
-    },
-    {
-      "type": "panel",
-      "id": "piechart",
-      "name": "Pie chart",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -103,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 10,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -194,18 +115,19 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "alias": "Battery remaining",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [],
           "measurement": "DeviceBatteryLevel",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"DeviceBatteryLevel\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -233,69 +155,184 @@
       "type": "stat"
     },
     {
-      "aliasColors": {
-        "Above 100": "dark-red",
-        "Above 105": "dark-red",
-        "Above 110": "dark-red",
-        "Above 95": "dark-red",
-        "Below RHR": "dark-green",
-        "Heart rate": "light-yellow"
-      },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Above 100"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Above 105"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Above 110"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Above 95"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Below RHR"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heart rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 10,
         "w": 21,
         "x": 3,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 61,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.3.2",
-      "pointradius": 0.5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "alias": "Heart rate",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -315,7 +352,7 @@
           "measurement": "heartrate",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> movingAverage(n: 6)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "A",
@@ -346,7 +383,7 @@
           "alias": "Above 95",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -366,7 +403,7 @@
           "measurement": "heartrate",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "select above from (SELECT moving_average(mean(\"value\"), 6) as above FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)) where above > 95",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"_value\"] > 95)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> movingAverage(n: 6)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "B",
@@ -403,7 +440,7 @@
           "alias": "Above 105",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -423,7 +460,7 @@
           "measurement": "heartrate",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "select above from (SELECT moving_average(mean(\"value\"), 6) as above FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)) where above > 105",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"_value\"] > 105)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> movingAverage(n: 6)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "C",
@@ -460,7 +497,7 @@
           "alias": "Below RHR",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -480,7 +517,7 @@
           "measurement": "heartrate",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "select below from (SELECT moving_average(mean(\"value\"), 6) as below FROM \"HeartRate_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)) where below < 60",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"_value\"] < 60)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> movingAverage(n: 6)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "D",
@@ -514,39 +551,10 @@
           ]
         }
       ],
-      "thresholds": [],
       "timeFrom": "24h",
-      "timeRegions": [],
       "title": "Heart Rate",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:573",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:574",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -608,17 +616,18 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [],
           "measurement": "RestingHR",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"RestingHR\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -749,7 +758,7 @@
           "alias": "Steps",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -769,7 +778,7 @@
           "measurement": "heartrate",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT moving_average(mean(\"value\"), 6) FROM \"Steps_Intraday\" WHERE $timeFilter GROUP BY time($__interval) fill(null)\n",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Steps_Intraday\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> movingAverage(n: 6)\n  |> yield(name: \"mean\")\n",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "A",
@@ -862,12 +871,12 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -886,6 +895,7 @@
           "measurement": "Steps_Intraday",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Total Steps\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -919,7 +929,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "description": "Resting HR",
       "fieldConfig": {
@@ -1094,7 +1104,7 @@
           "alias": "SpO2 Intraday",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -1113,6 +1123,7 @@
           "measurement": "SPO2_Intraday",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"SPO2_Intraday\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -1197,13 +1208,13 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "alias": "SpO2",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -1216,6 +1227,7 @@
           "measurement": "SPO2",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"SPO2\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"avg\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1278,7 +1290,7 @@
       "crosshairColor": "#8F070C",
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "display": "timeline",
       "expandFromQueryS": 0,
@@ -1315,14 +1327,14 @@
           "alias": "Sleep levels",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [],
           "hide": false,
           "measurement": "Sleep Levels",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT sleep_type FROM sleep_levels WHERE short = false",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Levels\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"level\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "rawQuery": false,
           "refId": "A",
@@ -1434,7 +1446,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "fieldConfig": {
         "defaults": {
@@ -1491,13 +1503,13 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "alias": "Total Asleep",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -1516,6 +1528,7 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesAsleep\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1543,7 +1556,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "fieldConfig": {
         "defaults": {
@@ -1564,7 +1577,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "smooth",
+            "lineInterpolation": "stepBefore",
             "lineStyle": {
               "fill": "solid"
             },
@@ -1627,7 +1640,7 @@
           "alias": "Sleep levels",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -1647,7 +1660,7 @@
           "measurement": "Sleep Levels",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT sleep_type FROM sleep_levels WHERE short = false",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Levels\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"level\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "rawQuery": false,
           "refId": "A",
@@ -1693,61 +1706,155 @@
       "type": "row"
     },
     {
-      "aliasColors": {
-        "Awake": "dark-red",
-        "Deep": "rgb(10, 13, 133)",
-        "Light": "light-blue",
-        "REM": "super-light-orange",
-        "sleep.distinct": "rgb(125, 230, 255)"
-      },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "datasource",
         "uid": "-- Mixed --"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 450
+              }
+            ]
+          },
+          "unit": "m"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "minutesAwake"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "minutesDeep"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(10, 13, 133)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "minutesLight"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "minutesREM"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 10,
         "w": 11,
         "x": 0,
         "y": 36
       },
-      "hiddenSeries": false,
       "id": 44,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 0,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.3.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "alias": "Deep",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -1767,9 +1874,9 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesDeep\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
-          "refId": "F",
+          "refId": "Deep",
           "resultFormat": "time_series",
           "select": [
             [
@@ -1792,7 +1899,7 @@
           "alias": "Light",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -1812,9 +1919,9 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesLight\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
-          "refId": "A",
+          "refId": "Light",
           "resultFormat": "time_series",
           "select": [
             [
@@ -1835,7 +1942,7 @@
           "alias": "REM",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -1855,9 +1962,9 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesREM\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
-          "refId": "B",
+          "refId": "REM",
           "resultFormat": "time_series",
           "select": [
             [
@@ -1878,7 +1985,7 @@
           "alias": "Awake",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -1898,9 +2005,9 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesAwake\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
-          "refId": "C",
+          "refId": "Awake",
           "resultFormat": "time_series",
           "select": [
             [
@@ -1918,59 +2025,10 @@
           ]
         }
       ],
-      "thresholds": [
-        {
-          "$$hashKey": "object:974",
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 450,
-          "yaxis": "left"
-        }
-      ],
-      "timeRegions": [],
       "title": "Sleep",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:536",
-          "format": "m",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:537",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {
-        "Awake": "dark-red",
-        "Deep": "rgb(10, 13, 133)",
-        "Light": "light-blue",
-        "REM": "super-light-orange",
-        "sleep.distinct": "rgb(125, 230, 255)"
-      },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "datasource",
         "uid": "-- Mixed --"
@@ -1978,51 +2036,164 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 450
+              }
+            ]
+          },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Awake"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Deep"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(10, 13, 133)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Light"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "REM"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sleep.distinct"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(125, 230, 255)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 10,
         "w": 7,
         "x": 11,
         "y": 36
       },
-      "hiddenSeries": false,
       "id": 45,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 0,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.3.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "alias": "Efficiency",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -2042,7 +2213,7 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesDeep\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
           "refId": "F",
           "resultFormat": "time_series",
@@ -2064,52 +2235,13 @@
           "tz": "$TimeZone"
         }
       ],
-      "thresholds": [
-        {
-          "$$hashKey": "object:974",
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 450,
-          "yaxis": "left"
-        }
-      ],
-      "timeRegions": [],
       "title": "Sleep Efficiency",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:536",
-          "format": "percent",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:537",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "fieldConfig": {
         "defaults": {
@@ -2183,6 +2315,7 @@
       "options": {
         "barRadius": 0,
         "barWidth": 0.87,
+        "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
           "calcs": [
@@ -2209,12 +2342,13 @@
           "alias": "Relative Skin Temp ",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [],
           "measurement": "Skin Temperature Variation",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Skin Temperature Variation\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"RelativeValue\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2352,7 +2486,7 @@
           "alias": "Deep",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -2372,7 +2506,7 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesDeep\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
           "refId": "F",
           "resultFormat": "time_series",
@@ -2397,7 +2531,7 @@
           "alias": "Light",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -2417,7 +2551,7 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesLight\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2441,7 +2575,7 @@
           "alias": "REM",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -2461,7 +2595,7 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesREM\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -2485,7 +2619,7 @@
           "alias": "Awake",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -2505,7 +2639,7 @@
           "measurement": "Sleep Summary",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"minutes_deep\") FROM \"sleep\" WHERE is_main_sleep = true AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Summary\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesAwake\")\r\n  |> filter(fn: (r) => r[\"isMainSleep\"] == \"True\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
           "refId": "C",
           "resultFormat": "time_series",
@@ -2537,35 +2671,15 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "continuous-YlRd"
-          },
           "custom": {
-            "calculation": "sum",
-            "colorPalette": "fieldOptions",
+            "calculation": "mean",
+            "colorPalette": "interpolateSpectral",
             "colorSpace": "rgb",
             "groupBy": 60,
             "invertPalette": false,
             "nullValueColor": "rgb(155, 155, 155)"
           },
-          "decimals": 2,
-          "mappings": [
-            {
-              "options": {
-                "asleep": {
-                  "index": 1,
-                  "text": "0"
-                },
-                "awake": {
-                  "index": 0,
-                  "text": "1"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "max": 0.6,
-          "min": 0,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -2633,7 +2747,7 @@
         "showValueIndicator": false,
         "timeFieldName": "Time",
         "to": "0",
-        "valueFieldName": "Value"
+        "valueFieldName": "level"
       },
       "pluginVersion": "9.3.2",
       "targets": [
@@ -2641,7 +2755,7 @@
           "alias": "Sleep Regularity",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -2654,7 +2768,7 @@
           "measurement": "Sleep Levels",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT median(\"level\") FROM \"Sleep Levels\" WHERE $timeFilter GROUP BY time(1h)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sleep Levels\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"level\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)\r\n  |> yield(name: \"median\")",
           "queryType": "randomWalk",
           "rawQuery": false,
           "refId": "A",
@@ -2698,7 +2812,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "description": "Resting HR",
       "fieldConfig": {
@@ -2826,7 +2940,7 @@
           "alias": "Resting HR",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -2845,6 +2959,7 @@
           "measurement": "RestingHR",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"RestingHR\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -2871,7 +2986,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "description": "Resting HR",
       "fieldConfig": {
@@ -3029,7 +3144,7 @@
           "alias": "DailyRmssd",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3048,6 +3163,7 @@
           "measurement": "HRV",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HRV\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"dailyRmssd\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -3074,7 +3190,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "description": "Resting HR",
       "fieldConfig": {
@@ -3232,7 +3348,7 @@
           "alias": "SpO2",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3251,6 +3367,7 @@
           "measurement": "SPO2",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"SPO2\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"avg\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -3277,9 +3394,9 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
-      "description": "Resting HR",
+      "description": "Breathing Rate",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3405,7 +3522,7 @@
           "alias": "Breathing Rate",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3424,6 +3541,7 @@
           "measurement": "BreathingRate",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"BreathingRate\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -3455,33 +3573,28 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
           "custom": {
-            "calculation": "sum",
-            "colorPalette": "interpolateYlOrRd",
-            "colorSpace": "hsl",
+            "calculation": "mean",
+            "colorPalette": "interpolateSpectral",
+            "colorSpace": "rgb",
             "groupBy": 60,
             "invertPalette": false,
             "nullValueColor": "rgb(155, 155, 155)"
           },
           "mappings": [],
-          "max": 3000,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-red",
+                "color": "green",
                 "value": null
               },
               {
-                "color": "light-yellow",
+                "color": "red",
                 "value": 80
               }
             ]
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
@@ -3507,7 +3620,7 @@
           "alias": "Hourly walk heatmap",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3526,6 +3639,7 @@
           "measurement": "Steps_Intraday",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Steps_Intraday\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -3566,7 +3680,7 @@
       "dashes": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "fill": 1,
       "fillGradient": 0,
@@ -3595,7 +3709,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "10.0.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -3607,13 +3721,13 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [],
           "measurement": "Total Steps",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT sum(\"value\") FROM \"Steps\" WHERE $timeFilter GROUP BY time(1d, ) fill(null)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Total Steps\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n",
           "queryType": "randomWalk",
           "rawQuery": false,
           "refId": "A",
@@ -3662,58 +3776,126 @@
       }
     },
     {
-      "aliasColors": {
-        "Intense Activity": "semi-dark-red",
-        "minutesVeryActive.distinct": "red"
-      },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "m"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Intense Activity"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "minutesVeryActive.distinct"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 10,
         "w": 12,
         "x": 0,
         "y": 81
       },
-      "hiddenSeries": false,
       "id": 13,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.3.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": true,
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "alias": "Light Activity",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3733,7 +3915,8 @@
           "measurement": "Activity Minutes",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "B",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HR zones\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Fat Burn\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "Fat burn",
           "resultFormat": "time_series",
           "select": [
             [
@@ -3756,7 +3939,7 @@
           "alias": "Fair Activity",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3775,8 +3958,9 @@
           "measurement": "Activity Minutes",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HR zones\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Cardio\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
-          "refId": "A",
+          "refId": "Cardio",
           "resultFormat": "time_series",
           "select": [
             [
@@ -3798,7 +3982,7 @@
           "alias": "Intense Activity",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3818,7 +4002,8 @@
           "measurement": "Activity Minutes",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "C",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HR zones\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Peak\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "Peak",
           "resultFormat": "time_series",
           "select": [
             [
@@ -3837,94 +4022,143 @@
           "tags": []
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Activity",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:470",
-          "format": "m",
-          "logBase": 1,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:471",
-          "format": "short",
-          "logBase": 1,
-          "min": "0",
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {
-        "Cardio": "semi-dark-yellow",
-        "Fat Burn": "semi-dark-green",
-        "Peak": "red"
-      },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "m"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Cardio"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Fat Burn"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Peak"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 10,
         "w": 12,
         "x": 12,
         "y": 81
       },
-      "hiddenSeries": false,
       "id": 15,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.3.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "alias": "Fat Burn",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3944,7 +4178,8 @@
           "measurement": "HR zones",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "B",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Minutes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesLightlyActive\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "Light Activity",
           "resultFormat": "time_series",
           "select": [
             [
@@ -3967,7 +4202,7 @@
           "alias": "Cardio",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -3987,8 +4222,9 @@
           "measurement": "HR zones",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Minutes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesVeryActive\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
-          "refId": "A",
+          "refId": "Intense Activity",
           "resultFormat": "time_series",
           "select": [
             [
@@ -4009,7 +4245,7 @@
           "alias": "Peak",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -4029,7 +4265,8 @@
           "measurement": "HR zones",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "C",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Minutes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesFairlyActive\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "Moderate Activity",
           "resultFormat": "time_series",
           "select": [
             [
@@ -4047,42 +4284,13 @@
           ]
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "HR Zones",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1012",
-          "format": "m",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1013",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "description": "",
       "fieldConfig": {
@@ -4203,7 +4411,7 @@
           "alias": "Light Activity",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -4223,7 +4431,8 @@
           "measurement": "Activity Minutes",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "B",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Minutes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesLightlyActive\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "Light activity",
           "resultFormat": "time_series",
           "select": [
             [
@@ -4246,7 +4455,7 @@
           "alias": "Intense Activity",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -4266,7 +4475,8 @@
           "measurement": "Activity Minutes",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Minutes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesVeryActive\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "Very active",
           "resultFormat": "time_series",
           "select": [
             [
@@ -4288,7 +4498,7 @@
           "alias": "Fair Activity",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -4308,7 +4518,8 @@
           "measurement": "Activity Minutes",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "C",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Minutes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesFairlyActive\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "Moderate activity",
           "resultFormat": "time_series",
           "select": [
             [
@@ -4330,7 +4541,7 @@
           "alias": "Sedentary",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -4350,7 +4561,8 @@
           "measurement": "Activity Minutes",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "D",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Minutes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"minutesSedentary\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "Not active",
           "resultFormat": "time_series",
           "select": [
             [
@@ -4374,56 +4586,105 @@
       "type": "piechart"
     },
     {
-      "aliasColors": {
-        "distance.distinct": "semi-dark-green"
-      },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "distance.distinct"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 7,
         "x": 10,
         "y": 91
       },
-      "hiddenSeries": false,
       "id": 23,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.3.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "alias": "Total Distance",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -4442,6 +4703,7 @@
           "measurement": "distance",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"distance\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -4463,90 +4725,124 @@
           "tz": "$TimeZone"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Distance",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:605",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:606",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {
-        "Total Calories": "semi-dark-red",
-        "calories.distinct": "semi-dark-red"
-      },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total Calories"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "calories.distinct"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 7,
         "x": 17,
         "y": 91
       },
-      "hiddenSeries": false,
       "id": 21,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.3.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "alias": "Total Calories",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -4565,6 +4861,7 @@
           "measurement": "calories",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"calories\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -4586,37 +4883,8 @@
           "tz": "$TimeZone"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Calories",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1621",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1622",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "backgroundColor": "rgba(128,128,128,0.1)",
@@ -4635,7 +4903,7 @@
       "crosshairColor": "#8F070C",
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "display": "timeline",
       "expandFromQueryS": 0,
@@ -4673,7 +4941,7 @@
           "alias": "Heart rate",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -4693,7 +4961,7 @@
           "measurement": "HeartRate_Intraday",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(value) FROM \"heartrate\" WHERE $timeFilter GROUP BY time(2m) fill(0)",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "rawQuery": false,
           "refId": "A",
@@ -4779,7 +5047,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "description": "",
       "fieldConfig": {
@@ -4789,7 +5057,10 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "basic",
+            "cellOptions": {
+              "mode": "basic",
+              "type": "gauge"
+            },
             "filterable": true,
             "inspect": false
           },
@@ -4825,8 +5096,10 @@
             },
             "properties": [
               {
-                "id": "custom.displayMode",
-                "value": "color-text"
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
               }
             ]
           }
@@ -4840,7 +5113,9 @@
       },
       "id": 34,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "enablePagination": true,
           "fields": "",
           "reducer": [
@@ -4857,19 +5132,19 @@
           }
         ]
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "10.0.3",
       "targets": [
         {
           "alias": "Walk",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [],
           "measurement": "Activity Records",
           "orderByTime": "DESC",
           "policy": "default",
-          "query": "SELECT \"calories\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') ",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\r\n  |> filter(fn: (r) => r[\"ActivityName\"] == \"Walk\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"calories\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -4895,14 +5170,14 @@
           "alias": "Swimming",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [],
           "hide": false,
           "measurement": "Activity Records",
           "orderByTime": "DESC",
           "policy": "default",
-          "query": "SELECT \"calories\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') ",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\r\n  |> filter(fn: (r) => r[\"ActivityName\"] == \"Swimming\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"calories\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -4928,14 +5203,14 @@
           "alias": "Biking",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [],
           "hide": false,
           "measurement": "Activity Records",
           "orderByTime": "DESC",
           "policy": "default",
-          "query": "SELECT \"calories\" FROM \"Activity Records\" WHERE (\"ActivityName\" = 'Walk') ",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\r\n  |> filter(fn: (r) => r[\"ActivityName\"] == \"Outdoor Bike\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"calories\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "rawQuery": false,
           "refId": "C",
           "resultFormat": "time_series",
@@ -5013,7 +5288,7 @@
       },
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HEALTH_STATS}"
+        "uid": "SFENozenk"
       },
       "fieldConfig": {
         "defaults": {
@@ -5133,7 +5408,7 @@
           "alias": "Battery Percentage",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
+            "uid": "SFENozenk"
           },
           "groupBy": [
             {
@@ -5152,6 +5427,7 @@
           "measurement": "DeviceBatteryLevel",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"DeviceBatteryLevel\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -5177,7 +5453,7 @@
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 37,
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -5215,6 +5491,31 @@
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "fitbit",
+          "value": "fitbit"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "SFENozenk"
+        },
+        "definition": "buckets()",
+        "description": "influxdb v2 bucket",
+        "hide": 0,
+        "includeAll": false,
+        "label": "bucket",
+        "multi": false,
+        "name": "bucket",
+        "options": [],
+        "query": "buckets()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
@@ -5224,8 +5525,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Health Stats",
+  "title": "fitbit",
   "uid": "_cl7FMC4z",
-  "version": 69,
+  "version": 31,
   "weekStart": ""
 }
