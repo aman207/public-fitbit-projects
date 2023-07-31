@@ -14,7 +14,10 @@ A script to fetch data from Fitbit servers using their API and store the data in
 6. On a computer with a web browser, run the token-helper.py script. This will generate the inital `refresh token` and saved to the given file path. A web browser is required for the OAuth authorization
     - If the intent is to run this script on a headless server, copy the resulting `token` file to the server
 7. Add the influx database as a datasource in Grafana (if required)
-8. Import the dashboard.json file. Change the datasource to your influx database and alter the `bucket` variable (located at the top of the dashboard after importing) to the previously created bucket
+8. Install the following two panel plugins:
+    1. [Hourly heatmap](https://grafana.com/grafana/plugins/marcusolsson-hourly-heatmap-panel/)
+    2. [Discrete](https://grafana.com/grafana/plugins/natel-discrete-panel/)
+8. Import the `Health Stats Dashboard.json` file into grafana. Change the datasource to your influx database and alter the `bucket` variable (located at the top of the dashboard after importing) to the previously created bucket
 
 You can use the Fitbit_Fetch_Autostart.service template to set up an auto-starting ( and auto-restarting in case of temporary failure ) service in Linux based system ( or WSL )
 
