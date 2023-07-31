@@ -1,9 +1,6 @@
 # Fitbit Fetch script and InfluxDB V2 Grafana integration
 A script to fetch data from Fitbit servers using their API and store the data in a local influxdb database. 
 
-## Dashboard Example
-![Dashboard](https://github.com/arpanghosh8453/public-fitbit-projects/blob/main/Grafana_Dashboard/Dashboard.png?raw=true)
-
 ## Setup instructions
 
 1. Create a new influxdb v2 bucket and token
@@ -24,3 +21,6 @@ You can use the Fitbit_Fetch_Autostart.service template to set up an auto-starti
 ## Usage
 
 Run the script; if the `token` file does not exist, the script will request a refresh token as input and then will set up the token file. You can check the logs to see the work in progress. The script, by default, keeps running forever, calling different functions at scheduled intervals. 
+
+## Dashboard Example
+![Dashboard](https://github.com/arpanghosh8453/public-fitbit-projects/blob/main/Grafana_Dashboard/Dashboard.png?raw=true)
