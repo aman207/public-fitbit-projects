@@ -52,7 +52,7 @@ logging.basicConfig(
 # ## Setting up base API Caller function
 
 # %%
-# Generic Request caller for all 
+# Generic Request caller for all
 def request_data_from_fitbit(url, headers={}, params={}, data={}, request_type="get"):
     global ACCESS_TOKEN
     retry_attempts = 0
@@ -64,14 +64,14 @@ def request_data_from_fitbit(url, headers={}, params={}, data={}, request_type="
                 "Accept": "application/json",
                 'Accept-Language': FITBIT_LANGUAGE
             }
-        try:        
+        try:
             if request_type == "get":
                 response = requests.get(url, headers=headers, params=params, data=data)
             elif request_type == "post":
                 response = requests.post(url, headers=headers, params=params, data=data)
             else:
                 raise Exception("Invalid request type " + str(request_type))
-        
+
             if response.status_code == 200: # Success
                 return response.json()
             elif response.status_code == 429: # API Limit reached
@@ -213,7 +213,7 @@ def get_battery_level():
     else:
         logging.error("Recording battery level failed : " + DEVICENAME)
 
-# For intraday detailed data, max possible range in one day. 
+# For intraday detailed data, max possible range in one day.
 def get_intraday_data_limit_1d(date_str, measurement_list):
     for measurement in measurement_list:
         data = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/' + measurement[0] + '/date/' + date_str + '/1d/' + measurement[2] + '.json')["activities-" + measurement[0] + "-intraday"]['dataset']
@@ -300,7 +300,7 @@ def get_daily_data_limit_30d(start_date_str, end_date_str):
     if spo2_data_list != None:
         for days in spo2_data_list:
             data = days["minutes"]
-            for record in data: 
+            for record in data:
                 log_time = datetime.fromisoformat(record["minute"])
                 utc_time = LOCAL_TIMEZONE.localize(log_time).astimezone(pytz.utc).isoformat()
                 collected_records.append({
@@ -353,7 +353,7 @@ def get_daily_data_limit_100d(start_date_str, end_date_str):
                         'minutesDeep': minutesDeep
                     }
                 })
-            
+
             sleep_level_mapping = {'wake': 3, 'rem': 2, 'light': 1, 'deep': 0, 'asleep': 1, 'restless': 2, 'awake': 3}
             for sleep_stage in record['levels']['data']:
                 log_time = datetime.fromisoformat(sleep_stage["dateTime"])
@@ -410,7 +410,7 @@ def get_daily_data_limit_365d(start_date_str, end_date_str):
             logging.info("Recorded " + activity_type + "for date " + start_date_str + " to " + end_date_str)
         else:
             logging.error("Recording failed : " + activity_type + " for date " + start_date_str + " to " + end_date_str)
-        
+
 
     activity_others_list = ["distance", "calories", "steps"]
     for activity_type in activity_others_list:
@@ -433,7 +433,7 @@ def get_daily_data_limit_365d(start_date_str, end_date_str):
             logging.info("Recorded " + activity_name + " for date " + start_date_str + " to " + end_date_str)
         else:
             logging.error("Recording failed : " + activity_name + " for date " + start_date_str + " to " + end_date_str)
-        
+
 
     HR_zones_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/heart/date/' + start_date_str + '/' + end_date_str + '.json')["activities-heart"]
     if HR_zones_data_list != None:
@@ -555,7 +555,7 @@ else:
     # Do Bulk update----------------------------------------------------------------------------------------------------------------------------
 
     schedule.every(1).hours.do(lambda : Get_New_Access_Token(CLIENT_ID,CLIENT_SECRET)) # Auto-refresh tokens every 1 hour
-    
+
     date_list = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d") for i in range((end_date - start_date).days + 1)]
 
     def yield_dates_with_gap(date_list, gap):
@@ -597,7 +597,7 @@ else:
 # %%
 # Ongoing continuous update of data
 if SCHEDULE_AUTO_UPDATE:
-    
+
     schedule.every(1).hours.do(lambda : Get_New_Access_Token(CLIENT_ID,CLIENT_SECRET)) # Auto-refresh tokens every 1 hour
     schedule.every(3).minutes.do( lambda : get_intraday_data_limit_1d(end_date_str, [('heart','HeartRate_Intraday','1sec'),('steps','Steps_Intraday','1min')] )) # Auto-refresh detailed HR and steps
     schedule.every(20).minutes.do(get_battery_level) # Auto-refresh battery level
@@ -614,6 +614,6 @@ if SCHEDULE_AUTO_UPDATE:
             collected_records = []
         time.sleep(30)
         update_working_dates()
-        
+
 
 
